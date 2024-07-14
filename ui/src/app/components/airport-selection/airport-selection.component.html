@@ -1,0 +1,91 @@
+<div class="m-1">
+  <label [for]="selectId" class="form-label">{{ label }}</label>
+  <ng-select
+    [labelForId]="selectId"
+    dfManageNavSelect
+    [items]="airportsData"
+    [multiple]="false"
+    placeholder="Select airport"
+    bindLabel="name"
+    [selectableGroupAsModel]="false"
+    [selectableGroup]="true"
+    [groupBy]="groupByFn"
+    [groupValue]="groupValueFn"
+    [closeOnSelect]="false"
+    bindValue="iataCode"
+    [searchable]="true"
+    [clearSearchOnAdd]="true"
+    [(ngModel)]="selectedAirportTemplate"
+    [minTermLength]="3"
+    [typeahead]="searchedText$"
+    (change)="onSelectionChange($event)">
+    <ng-template ng-multi-label-tmp let-items="items" let-clear="clear">
+      @for (item of items || []; track item) {
+        <div class="ng-value">
+          <div class="badge rounded-pill df-closable bg-light">
+            {{ item.address.countryName }}
+            <button
+              type="button"
+              aria-label="Remove"
+              [dfManageBadgeEventsSelect]="[clear, item]">
+              <span aria-hidden="true" class="icon-times"></span>
+            </button>
+          </div>
+        </div>
+      }
+    </ng-template>
+    <ng-template
+      ng-optgroup-tmp
+      let-item="item"
+      let-item$="item$"
+      let-index="index"
+      let-search="searchTerm">
+      <div class="form-check">
+        <input
+          [id]="selectId + '-group-' + index"
+          class="form-check-input"
+          [name]="selectId + '-group-' + index"
+          type="checkbox"
+          [(ngModel)]="item$.selected"
+          [indeterminate]="isIndeterminate(item$)" />
+
+        <label
+          class="form-check-label"
+          [for]="selectId + '-group-' + index"
+          (click)="$event.preventDefault()"
+          [dfOptionHighlight]="search"
+          tabindex="0">
+          <span class="icon-plane df-icon-template-plane mt-1 me-2"></span
+          >{{ item.address.countryName }}
+        </label>
+      </div>
+    </ng-template>
+    <ng-template
+      ng-option-tmp
+      let-item="item"
+      let-item$="item$"
+      let-index="index"
+      let-search="searchTerm">
+      <div class="d-flex align-items-center">
+        <span
+          class="icon-level-up df-icon-template-arrow df-icon-solid me-3 ms-1 df-transform-r-90"></span>
+        <div class="form-check">
+          <input
+            [id]="selectId + '-item-' + index"
+            [name]="selectId + '-item-' + index"
+            type="checkbox"
+            [ngModel]="item$.selected"
+            class="form-check-input" />
+          <label
+            [for]="selectId + '-item-' + index"
+            class="form-check-label"
+            (click)="$event.preventDefault()"
+            [dfOptionHighlight]="search"
+            tabindex="1"
+            >{{ item.name }}</label
+          >
+        </div>
+      </div>
+    </ng-template>
+  </ng-select>
+</div>

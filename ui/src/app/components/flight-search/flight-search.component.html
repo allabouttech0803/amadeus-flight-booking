@@ -1,0 +1,140 @@
+<div class="container-fluid">
+  <form class="" #flightSearchForm="ngForm">
+    <div class="row m-9">
+      <div class="col-md-3 mt-4">
+        <app-airport-selection
+          selectId="fromAirportNgSelect"
+          label="Source"
+          [airportsData]="airportsData"
+          [searchedText$]="searchedText$"
+          [selectedAirportTemplate]="selectedAirportTemplate"
+          [groupByFn]="groupByFn"
+          [groupValueFn]="groupValueFn"
+          (airportSelected)="setSourceAirport($event)">
+        </app-airport-selection>
+      </div>
+      <div class="col-md-3 mt-4">
+        <app-airport-selection
+          selectId="toAirportNgSelect"
+          label="Destination"
+          [airportsData]="airportsData"
+          [searchedText$]="searchedText$"
+          [selectedAirportTemplate]="selectedAirportTemplate"
+          [groupByFn]="groupByFn"
+          [groupValueFn]="groupValueFn"
+          (airportSelected)="setDestinationAirport($event)">
+        </app-airport-selection>
+      </div>
+      <div class="col-md-3 mb-3 mt-3">
+        <div class="mb-4">
+          <span
+            class="icon-plane-departure df-icon-solid p-2"
+            aria-hidden="true"></span>
+          <label for="from-date">Departure</label>
+        </div>
+        <div class="input-group df-w-0 position-absolute">
+          <input
+            name="datepicker"
+            class="form-control"
+            ngbDatepicker
+            #dppop="ngbDatepicker"
+            [autoClose]="'outside'"
+            [showWeekNumbers]="false"
+            (dateSelect)="onDateSelection($event)"
+            [displayMonths]="2"
+            [placement]="['bottom-left', 'top-left']"
+            [navigation]="'arrows'"
+            [dayTemplate]="dayTemplate"
+            [outsideDays]="'collapsed'"
+            [startDate]="getNgbDpStartDate(startDate)"
+            tabindex="-1"
+            aria-hidden="true" />
+          <ng-template
+            #dayTemplate
+            let-date
+            let-disabled="disabled"
+            let-focused="focused"
+            let-selected="selected">
+            <div
+              class="df-datepicker-date"
+              [class.df-datepicker-date-disabled]="disabled"
+              [class.df-datepicker-date-focused]="focused"
+              [class.df-datepicker-date-selected]="isSelected(date)"
+              [class.df-datepicker-date-from]="isFrom(date)"
+              [class.df-datepicker-date-to]="isTo(date)"
+              [class.df-datepicker-date-between]="isBetween(date)"
+              (mouseenter)="hoveredDate = date"
+              (mouseleave)="hoveredDate = null">
+              {{ date.day }}
+            </div>
+          </ng-template>
+        </div>
+        <div class="input-group">
+          <input
+            id="from-date"
+            #dpFromDate
+            class="form-control"
+            placeholder="DD/MM/YYYY"
+            name="from-date"
+            [value]="formatter.format(fromDate)"
+            (input)="fromDate = parseInput(fromDate, dpFromDate.value)"
+            [dfInputIcon]="['append']" />
+          <div class="input-group-append">
+            <button
+              class="input-group-text icon-calendar"
+              (click)="toggle(fromDate, dppop)"
+              type="button">
+              <span class="visually-hidden">Toggle datepicker</span>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3 mb-3 mt-3">
+        <div class="mb-4">
+          <span
+            class="icon-plane-arrival df-icon-solid p-2"
+            aria-hidden="true"></span>
+          <label for="to-date">Return</label>
+        </div>
+        <div class="input-group">
+          <input
+            id="to-date"
+            #dpToDate
+            class="form-control"
+            placeholder="DD/MM/YYYY"
+            name="to-date"
+            [value]="formatter.format(toDate)"
+            (input)="toDate = parseInput(toDate, dpToDate.value)"
+            [dfInputIcon]="['append']" />
+          <div class="input-group-append">
+            <button
+              class="input-group-text icon-calendar"
+              (click)="toggle(toDate, dppop)"
+              type="button">
+              <span class="visually-hidden">Toggle datepicker</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12 d-flex align-items-center justify-content-center">
+        <button
+          class="btn btn-primary btn-md rounded"
+          type="button"
+          (click)="searchFlights()"
+          [disabled]="isLoading">
+          Search Flights
+          <div *ngIf="isLoading === true">
+            <span
+              class="df-spinner-border-dark spinner-border-sm text-light"
+              role="status"
+              aria-hidden="true"></span>
+            <span class="visually-hidden">Loading...</span>
+          </div>
+        </button>
+      </div>
+    </div>
+  </form>
+  <hr />
+</div>

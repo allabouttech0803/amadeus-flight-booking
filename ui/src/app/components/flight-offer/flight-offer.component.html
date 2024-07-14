@@ -1,0 +1,59 @@
+<div class="card-body">
+  <div class="row">
+    <div class="col-md-4">
+      <div class="card border-0 shadow-sm rounded p-3 mb-3">
+        <h5 class="card-title text-bold">Flight Offer {{ flightOffer.id }}</h5>
+        <p class="card-text">
+          <strong>Total Price:</strong> {{ flightOffer.price.currency }}
+          {{ flightOffer.price.total }}
+        </p>
+        <p class="card-text">
+          <strong>Number of Seats:</strong>
+          {{ flightOffer.numberOfBookableSeats }}
+        </p>
+      </div>
+    </div>
+    <div class="col-md-8">
+      <div *ngFor="let segment of flightOffer.itineraries[0].segments" class="flight-segment mb-3">
+        <div class="card border-0 shadow-sm rounded">
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-4">
+                <h6>{{ segment.departure.iataCode }}</h6>
+                <p>{{ segment.departure.at | date: 'medium' }}</p>
+                <p>Terminal {{ segment.departure.terminal }}</p>
+              </div>
+              <div class="col-md-4 text-center">
+                <i class="fas fa-plane fa-2x"></i>
+                <p>{{ segment.duration }}</p>
+                <p>
+                  {{ segment.numberOfStops }}
+                  {{ segment.numberOfStops === 1 ? 'Stop' : 'Stops' }}
+                </p>
+              </div>
+              <div class="col-md-4 text-right">
+                <h6>{{ segment.arrival.iataCode }}</h6>
+                <p>{{ segment.arrival.at | date: 'medium' }}</p>
+                <p>Terminal {{ segment.arrival.terminal }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="text-right" *ngIf="
+      flightOfferConfirmationStatusEvent.value !== 'confirmed' &&
+      showConfirmationButton
+    ">
+    <button class="btn btn-primary rounded-pill" (click)="onConfirm(flightOffer)"
+      [disabled]="flightOfferConfirmationStatusEvent.value === 'confirming'">
+      Confirm Offer
+      <div *ngIf="flightOfferConfirmationStatusEvent.value === 'confirming'">
+        <span class="df-spinner-border-dark spinner-border-sm text-light" role="status" aria-hidden="true"></span>
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </button>
+    <hr />
+  </div>
+</div>

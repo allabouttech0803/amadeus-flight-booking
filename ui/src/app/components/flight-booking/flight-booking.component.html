@@ -1,0 +1,60 @@
+<app-flight-search
+  (flightOffersEvent)="onFlightOffersRefresh($event)"></app-flight-search>
+<section *ngIf="flightOffers.length" class="container mt-5">
+  <div class="row justify-content-center">
+    <article class="col-lg-10">
+      <div class="card border-0 shadow-sm rounded">
+        <header class="card-header bg-primary text-white rounded-top">
+          <h5 class="card-title mb-0">Flight Offers</h5>
+        </header>
+        <div
+          class="card-body"
+          *ngIf="flightConfirmationStatus !== 'confirmed'">
+          <ng-container *ngFor="let offer of flightOffers">
+            <app-flight-offer
+              [flightOffer]="offer"
+              class="mb-4 rounded"
+              (flightOfferConfirmationStatusEvent)="onFlightOfferConfirmation($event)"
+              (confirmedFlightOffer)="
+                onConfirmFlightOffer($event)
+              "></app-flight-offer>
+          </ng-container>
+          <hr />
+        </div>
+        <div
+          *ngIf="flightConfirmationStatus === 'confirmed'"
+          class="m-4">
+          <app-flight-offer
+            [flightOffer]="selectedFlightOffer"
+            [showConfirmationButton]="false"></app-flight-offer>
+          <app-traveler-info></app-traveler-info>
+          @if (successMessage) {
+            <div class="m-3">
+              <ngb-alert
+                dfInsertAlertIcon
+                type="success"
+                (closed)="successMessage = undefined"
+                >{{ successMessage }}
+              </ngb-alert>
+            </div>
+          }
+          <div class="d-flex justify-content-center align-items-center">
+            <button
+              class="btn btn-dark-primary rounded-pill"
+              (click)="bookFlight()"
+              [disabled]="flightBookingStatus !== 'not-booked'">
+              Book Flight
+              <div *ngIf="flightBookingStatus === 'booking'">
+                <span
+                  class="df-spinner-border-dark spinner-border-sm text-light"
+                  role="status"
+                  aria-hidden="true"></span>
+                <span class="visually-hidden">Loading...</span>
+              </div>
+            </button>
+          </div>
+        </div>
+      </div>
+    </article>
+  </div>
+</section>
