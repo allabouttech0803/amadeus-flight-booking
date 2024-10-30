@@ -1,7 +1,9 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Query, UseGuards } from '@nestjs/common';
+import { AuthGuard } from 'src/common/guards/amadeus-api-auth/auth.guard';
 import { AmadeusService } from 'src/common/services/amadeus/amadeus.service';
 
 @Controller('api')
+@UseGuards(AuthGuard)
 export class FlightOffersController {
   constructor(private readonly amadeusClientService: AmadeusService) {}
 
